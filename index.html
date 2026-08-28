@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HarmonicFlora</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="overlay">
+      <div class="overlay-inner">
+        <p class="tagline">Speak, and it grows.</p>
+        <button id="enter-btn">Enter</button>
+        <p class="hint">allow microphone when asked</p>
+      </div>
+    </div>
+    <div id="calibration-msg">listening to the room…</div>
+    <div id="canvas-container"></div>
+    <div id="legend">
+      <div class="legend-title">how your voice shapes it</div>
+      <div><span>↑ high pitch</span> reach up, spread &amp; bloom</div>
+      <div><span>↓ low pitch</span> droop &amp; wilt</div>
+      <div><span>louder</span> grows faster, brighter</div>
+      <div><span>bright “eee”</span> vivid gold · <span>round “ohh”</span> deep green</div>
+      <div><span>silence</span> settles &amp; sheds petals</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

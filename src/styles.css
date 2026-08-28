@@ -1,0 +1,139 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0e0d;
+  font-family: 'Georgia', serif;
+}
+
+#canvas-container {
+  position: fixed;
+  inset: 0;
+}
+
+#canvas-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Overlay — the "Enter" screen */
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0e0d;
+  z-index: 10;
+  transition: opacity 0.8s ease;
+}
+
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.tagline {
+  color: #7aad8a;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+#enter-btn {
+  background: transparent;
+  border: 1px solid rgba(122, 173, 138, 0.5);
+  color: #a8d5b5;
+  font-family: 'Georgia', serif;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 14px 52px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 24px rgba(122, 173, 138, 0.08);
+}
+
+#enter-btn:hover {
+  background: rgba(122, 173, 138, 0.08);
+  border-color: rgba(122, 173, 138, 0.9);
+  color: #c8ecd4;
+  box-shadow: 0 0 32px rgba(122, 173, 138, 0.2);
+}
+
+.hint {
+  color: rgba(122, 173, 138, 0.35);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+/* Calibration status shown after clicking Enter */
+#calibration-msg {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+  color: rgba(122, 173, 138, 0.5);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  letter-spacing: 0.06em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+#calibration-msg.visible {
+  opacity: 1;
+}
+
+/* Corner legend — subtle voice→result guide */
+#legend {
+  position: fixed;
+  bottom: 22px;
+  right: 24px;
+  z-index: 8;
+  color: rgba(150, 200, 165, 0.5);
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  line-height: 1.85;
+  text-align: right;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease 0.4s;
+}
+
+#legend.visible {
+  opacity: 1;
+}
+
+#legend .legend-title {
+  color: rgba(150, 200, 165, 0.35);
+  font-style: italic;
+  font-size: 11px;
+  margin-bottom: 6px;
+  text-transform: lowercase;
+}
+
+#legend span {
+  color: rgba(190, 230, 200, 0.85);
+}

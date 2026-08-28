@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env.local
+benchmark/artifacts/report.md
+benchmark/artifacts/results.json
+benchmark/artifacts/results.csv
+benchmark/audio/*.wav
+.DS_Store

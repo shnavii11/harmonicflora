@@ -1,0 +1,9 @@
+{
+  "_comment": "Ground-truth speech intervals per clip. Edit when you've labeled your clips.",
+  "clip1-pauses.wav":  { "speech": [] },
+  "clip2-hum.wav":     { "speech": [] },
+  "clip3-silence.wav": { "speech": [] },
+  "clip4-breath.wav":  { "speech": [] },
+  "clip5-noisy.wav":   { "speech": [] },
+  "clip6-quiet.wav":   { "speech": [] }
+}

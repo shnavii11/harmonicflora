@@ -1,0 +1,25 @@
+{
+  "name": "harmonicflora",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "meyda": "^5.6.1",
+    "p5": "^1.9.4",
+    "pitchy": "^4.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/p5": "^1.7.6",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}
