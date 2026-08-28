@@ -3,6 +3,8 @@
 import type { AudioFeatures } from '../audio/features.js'
 import type { PitchResult } from '../audio/pitch.js'
 import type { PlantControls } from '../render/plant.js'
+import type { EmotionState } from '../emotion/types.js'
+import { NEUTRAL_STATE } from '../emotion/types.js'
 import { PITCH_MIN_HZ, PITCH_MAX_HZ, PITCH_CLARITY_MIN } from '../config.js'
 import { ema } from '../audio/smoothing.js'
 
@@ -18,9 +20,11 @@ export function featuresToControls(
   pitch: PitchResult,
   vadActive: boolean,
   _prev: PlantControls,
+  emotion: EmotionState = NEUTRAL_STATE,
 ): PlantControls {
-  // Energy: RMS is roughly 0..0.2 for voice → normalize to 0..1
-  sEnergy = ema(sEnergy, clamp01(features.rms * 6))
+  // Energy: RMS is roughly 0..0.15 for voice → normalize to 0..1.
+  // Sensitive multiplier so even quiet humming reads as meaningful energy.
+  sEnergy = ema(sEnergy, clamp01(features.rms * 11))
 
   // Pitch: log-normalize 70–500 Hz → 0..1. Hold previous when unvoiced.
   let hasPitch = false
@@ -45,5 +49,6 @@ export function featuresToControls(
     hasPitch,
     hue: sHue,
     flux: sFlux,
+    emotion,
   }
 }

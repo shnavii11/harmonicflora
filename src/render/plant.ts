@@ -1,6 +1,10 @@
 import {
-  GROWTH_SPEED, VITALITY_RISE, VITALITY_DECAY, LSYSTEM_MAX_DEPTH,
+  GROWTH_SPEED, VITALITY_RISE, VITALITY_DECAY, LSYSTEM_MAX_DEPTH, SPECIES_MORPH_SPEED,
 } from '../config.js'
+import { NEUTRAL_STATE, EmotionState } from '../emotion/types.js'
+import {
+  SpeciesProfile, BASELINE_SPECIES, blendSpecies, lerpProfile, cloneProfile,
+} from './species.js'
 
 // Expressive, normalized controls coming from the voice.
 export interface PlantControls {
@@ -10,6 +14,7 @@ export interface PlantControls {
   hasPitch: boolean
   hue: number        // 0..360 leaf hue from timbre
   flux: number       // 0..1 motion energy
+  emotion: EmotionState  // prosody-derived valence/arousal + soft weights
 }
 
 export const DEFAULT_CONTROLS: PlantControls = {
@@ -19,6 +24,7 @@ export const DEFAULT_CONTROLS: PlantControls = {
   hasPitch: false,
   hue: 135,
   flux: 0,
+  emotion: NEUTRAL_STATE,
 }
 
 // Eased values the renderer reads each frame.
@@ -30,6 +36,7 @@ export interface DisplayParams {
   hue: number         // 0..360
   glow: number        // 0..1
   sway: number        // radians of idle/flux sway
+  species: SpeciesProfile  // smoothed, blended emotion → tree species
 }
 
 const clamp = (x: number, lo: number, hi: number) => Math.min(Math.max(x, lo), hi)
@@ -44,25 +51,28 @@ export class Plant {
   private eHue = 135
   private eGlow = 0.35
   private eSway = rad(2)
+  private species = cloneProfile(BASELINE_SPECIES)   // morphs toward the emotion blend
 
   reset() {
     this.growth = 0.5
     this.vitality = 0.55
+    this.species = cloneProfile(BASELINE_SPECIES)
   }
 
   tick(c: PlantControls, dt: number) {
-    // --- Growth: matures while voiced; high pitch grows faster ---
-    if (c.vadActive) {
-      const drive = c.energy * (0.6 + 0.8 * c.pitch)
+    // --- Growth: matures while voiced (or on any real sound); high pitch faster ---
+    const voiced = c.vadActive || c.energy > 0.06
+    if (voiced) {
+      const drive = (0.35 + c.energy) * (0.6 + 0.8 * c.pitch)
       this.growth = clamp(this.growth + drive * GROWTH_SPEED * this.maxDepth * dt, 0.5, this.maxDepth)
     }
 
-    // --- Vitality: rises while speaking with energy, decays in silence ---
-    const vTarget = c.vadActive ? clamp(0.4 + c.energy * 0.8, 0, 1) : 0.28
-    const vRate = c.vadActive ? VITALITY_RISE : VITALITY_DECAY
+    // --- Vitality: sensitive — any sound perks it up; decays only in true silence ---
+    const vTarget = voiced ? clamp(0.55 + c.energy * 0.9, 0, 1) : 0.3
+    const vRate = voiced ? VITALITY_RISE : VITALITY_DECAY
     this.vitality += (vTarget - this.vitality) * vRate
     // Low pitch pulls vitality down a touch → low humming feels heavier/wilting
-    if (c.hasPitch && c.pitch < 0.35) this.vitality -= (0.35 - c.pitch) * 0.01
+    if (c.hasPitch && c.pitch < 0.32) this.vitality -= (0.32 - c.pitch) * 0.008
     this.vitality = clamp(this.vitality, 0, 1)
 
     // --- Bias: high pitch + health → reach up; low/silent → droop ---
@@ -80,6 +90,10 @@ export class Plant {
     this.eGlow += (clamp(0.22 + c.energy, 0, 1) - this.eGlow) * 0.08
     const swayTarget = rad(1.5 + c.flux * 7 + (c.vadActive ? 0 : 0.5))
     this.eSway += (swayTarget - this.eSway) * 0.05
+
+    // --- Species: morph smoothly toward the blended emotion profile ---
+    const targetSpecies = blendSpecies(c.emotion.weights)
+    lerpProfile(this.species, targetSpecies, SPECIES_MORPH_SPEED)
   }
 
   params(): DisplayParams {
@@ -91,6 +105,7 @@ export class Plant {
       hue: this.eHue,
       glow: this.eGlow,
       sway: this.eSway,
+      species: this.species,
     }
   }
 }

@@ -1,0 +1,7 @@
+{
+  "_comment": "Hand-marked emotional onsets per clip for emotion-latency.ts. 't' = seconds into the clip where the emotion clearly begins; 'emotion' = one of happy|sad|angry|neutral. Record clips (see README.md) that shift emotion partway through, then mark the shift times here.",
+  "emotion-happy.wav":   { "onsets": [{ "t": 1.0, "emotion": "happy" }] },
+  "emotion-sad.wav":     { "onsets": [{ "t": 1.0, "emotion": "sad" }] },
+  "emotion-angry.wav":   { "onsets": [{ "t": 1.0, "emotion": "angry" }] },
+  "emotion-mixed.wav":   { "onsets": [{ "t": 1.0, "emotion": "happy" }, { "t": 5.0, "emotion": "angry" }, { "t": 9.0, "emotion": "sad" }] }
+}
